@@ -16,15 +16,18 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Clone the repository
 2. Open the solution in Visual Studio
-3. Build the solution
+3. Update variables
+4. Update CreateEntity logic
+5. Build the solution
 
 ## Usage
 
-The application requires the Oracle database password to be set in the environment variables under the key "OPS_NET". If the password is not found, the application will prompt for it.
+The application requires several Oracle database credentials which can be found in the Oracle Variables region.
+Amoung them is the Oracle database password to be set in the environment variables under the key "OPS_NET". If the password is not found, the application will prompt for it.
 
-The application is currently set to read from the `OPSNET.CENTER_DAY` table where `LOCID = 'ZTL'`. This can be modified in the `Program.cs` file.
-
-The data is then imported into the `crff9_centerday` entity in Dataverse.
+The application also requires two Dataverse variables: the environment url and the entity you will be writing to.
+Make sure to add your own method to the CreateRecord class to handle the construction of your entity.
+After that change the references in Program.cs
 
 ## Built With
 
