@@ -4,15 +4,15 @@ using Microsoft.Xrm.Sdk;
 namespace Dataverse;
 
 class Connect{
-    public static ServiceClient GetService(){
-        string connectionString = $"AuthType=OAuth;Url=https://orgd6accc40.crm9.dynamics.com;RedirectUri=http://localhost;LoginPrompt=Auto";
+    public static ServiceClient GetService(string url){
+        string connectionString = $"AuthType=OAuth;Url={url};RedirectUri=http://localhost;LoginPrompt=Auto";
         ServiceClient svc = new(connectionString);
         return svc;
     }
 }
 
-public class CenterDay{
-    public static Entity CreateEntity(string locid, string yyyymmdd, string total){
+public class CreateEntity{
+    public static Entity CenterDay(string locid, string yyyymmdd, string total){
         var record = new Entity("crff9_centerday");
 
         // convert to datetime
