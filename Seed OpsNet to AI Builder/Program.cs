@@ -4,6 +4,8 @@ using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Oracle.ManagedDataAccess.Client;
 
+#region Oracle Variables
+
 string userId = "JAMES_B_BRADFORD";
 string? password = Environment.GetEnvironmentVariable("OPS_NET");
 if (password == null)
@@ -17,12 +19,21 @@ string command = "SELECT LOCID, YYYYMMDD, TOTAL FROM OPSNET.CENTER_DAY WHERE LOC
 
 string connectionString =
     "Data Source=" + db + ";User Id=" + userId + ";Password=" + password + ";";
-EntityCollection newRecords = new();
 
+#endregion
+
+#region Dataverse Variables 
+
+string url = "https://orgd6accc40.crm9.dynamics.com";
+string entityName = "crff9_centerday";
+
+#endregion
+
+EntityCollection newRecords = new();
 using (OracleConnection conn = new(connectionString))
 {
     using OracleCommand cmd = conn.CreateCommand();
-    using ServiceClient service = Connect.GetService();
+    using ServiceClient service = Connect.GetService(url);
     try
     {
         conn.Open();
@@ -31,7 +42,7 @@ using (OracleConnection conn = new(connectionString))
         Console.WriteLine("Reading data...");
         while (reader.Read())
         {
-            Entity record = CenterDay.CreateEntity(
+            Entity record = CreateEntity.CenterDay(
                 reader.GetString(0),
                 reader.GetString(1),
                 reader.GetString(2)
@@ -49,11 +60,11 @@ using (OracleConnection conn = new(connectionString))
         {
             var totalRecords = newRecords.Entities.Count;
             Console.WriteLine($"Creating records ({totalRecords})...");
-            newRecords.EntityName = "crff9_centerday";
+            newRecords.EntityName = entityName;
             int batchSize = 1000;
             for (int i = 0; i < newRecords.Entities.Count; i += batchSize)
             {
-                EntityCollection batch = new() { EntityName = "crff9_centerday" };
+                EntityCollection batch = new() { EntityName = entityName };
                 for (int j = i; j < Math.Min(i + batchSize, newRecords.Entities.Count); j++)
                 {
                     batch.Entities.Add(newRecords.Entities[j]);
